@@ -19,7 +19,15 @@ public class UserRepository {
         return userMapper.selectByLoginId(userLoginId);
     }
 
+    public boolean isUserExists(String username){
+        return userMapper.isUserExistsByName(username) == 1;
+    }
+
     public CustomUserDetails selectByLoginIdForSecurity(String userLoginId){
         return userMapper.selectByLoginIdForSecurity(userLoginId);
+    }
+
+    public void insertUser(String username, String password){
+        userMapper.insertUser(username,password);
     }
 }

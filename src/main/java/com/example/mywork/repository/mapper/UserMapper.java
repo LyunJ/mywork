@@ -10,5 +10,12 @@ public interface UserMapper {
 
     UserDTO selectByLoginId(String userLoginId);
 
+    Integer isUserExists(Integer userId);
+
+    Integer isUserExistsByName(String username);
+
+    void insertUser(String username, String password);
+
+
     CustomUserDetails selectByLoginIdForSecurity(String userLoginId);
 }

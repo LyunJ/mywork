@@ -7,7 +7,23 @@
         SELECT * FROM user WHERE user_id = #{userId}
     </select>
 
-    <select id="selectByLoginIdForSecurity" resultType="com.example.mywork.config.security.custom.CustomUserDetails">
+    <select id="selectByLoginId" resultType="com.example.mywork.model.UserDTO">
         SELECT * FROM user WHERE user_login_id = #{userLoginId}
     </select>
+
+    <select id="isUserExists" resultType="Integer">
+        SELECT EXISTS(SELECT * FROM user WHERE user_id = #{userId})
+    </select>
+
+    <select id="isUserExistsByName" resultType="Integer">
+        SELECT EXISTS(SELECT * FROM user WHERE user_login_id = #{username})
+    </select>
+
+    <select id="selectByLoginIdForSecurity" resultType="com.example.mywork.config.security.custom.CustomUserDetails">
+        SELECT user_id as userId, user_login_id as userLoginId, user_login_password as userPassword FROM user WHERE user_login_id = #{userLoginId}
+    </select>
+
+    <insert id="insertUser" >
+        INSERT INTO user (user_login_id, user_login_password) values (#{username},#{password});
+    </insert>
 </mapper>
