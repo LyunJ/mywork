@@ -14,7 +14,7 @@ public interface UserMapper {
 
     Integer isUserExistsByName(String username);
 
-    void insertUser(String username, String password);
+    void insertUser(Integer teamType,String username, String password);
 
 
     CustomUserDetails selectByLoginIdForSecurity(String userLoginId);

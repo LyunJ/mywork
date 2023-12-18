@@ -24,6 +24,6 @@
     </select>
 
     <insert id="insertUser" >
-        INSERT INTO user (user_login_id, user_login_password) values (#{username},#{password});
+        INSERT INTO user (team_type, user_login_id, user_login_password) values (#{teamType},#{username},#{password});
     </insert>
 </mapper>

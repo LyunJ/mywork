@@ -22,7 +22,7 @@ public class UserService {
             throw new RuntimeException("이미 가입된 유저 입니다");
         }
 
-        userRepository.insertUser(loginDTO.getUsername(), passwordEncoder.encode(loginDTO.getPassword()));
+        userRepository.insertUser(loginDTO.getTeamType(),loginDTO.getUsername(), passwordEncoder.encode(loginDTO.getPassword()));
 
         return userRepository.selectByLoginId(loginDTO.getUsername());
     }
