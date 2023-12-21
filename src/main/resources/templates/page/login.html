@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <div th:replace="~{/fragment/header.html :: fragment-header}"></div>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/sign-in.css}" >
+</head>
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <main class="form-signin w-100 m-auto">
+        <form th:action="@{/api/authenticate}" th:object="${loginDTO}" method="get">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="floatingInput" placeholder="username" th:field="*{username}">
+                <label for="floatingInput">User Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" th:field="*{password}">
+                <label for="floatingPassword">Password</label>
+            </div>
+            <button id="sign-in-btn" class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+        </form>
+    </main>
+</body>
+
+</html>

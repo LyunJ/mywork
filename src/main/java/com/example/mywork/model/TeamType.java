@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+
 @RequiredArgsConstructor
 @Getter
 public enum TeamType {

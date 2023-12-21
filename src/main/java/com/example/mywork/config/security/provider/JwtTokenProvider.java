@@ -59,6 +59,8 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request){
-        return request.getHeader("X-AUTH-TOKEN");
+        return Arrays.stream(request.getCookies()).filter(cookie ->
+            cookie.getName().equals("jwt")
+        ).findFirst().get().getValue();
     }
 }

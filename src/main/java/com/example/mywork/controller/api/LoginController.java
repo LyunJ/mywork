@@ -5,7 +5,10 @@ import com.example.mywork.config.security.provider.JwtTokenProvider;
 import com.example.mywork.model.LoginDTO;
 import com.example.mywork.model.TokenDTO;
 import com.example.mywork.model.UserDTO;
+import com.example.mywork.service.CookieService;
+import com.example.mywork.service.LoginService;
 import com.example.mywork.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -15,10 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -26,23 +26,39 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class LoginController {
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserService userService;
+    private final LoginService loginService;
+    private final CookieService cookieService;
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDTO> authorize(@RequestBody LoginDTO loginDTO){
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),loginDTO.getPassword());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Authentication authentication = loginService.getAuthentication(loginDTO);
+        if (authentication == null){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         String jwt = jwtTokenProvider.createToken(authentication.getName());
 
         HttpHeaders httpHeaders = new HttpHeaders();
-
         httpHeaders.add("Authorization","Bearer " + jwt);
-        log.info(jwt);
 
-        return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<TokenDTO>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping("/login")
+    public String login(HttpServletResponse response, @ModelAttribute("loginDTO") LoginDTO loginDTO){
+        Authentication authentication = loginService.getAuthentication(loginDTO);
+        if (authentication == null){
+            return "redirect:/page/login";
+        }
+
+        String jwt = jwtTokenProvider.createToken(authentication.getName());
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Authorization","Bearer " + jwt);
+
+        cookieService.setCookie(response,"jwt",jwt);
+        return "redirect:/page/home";
     }
 
     @PostMapping("/signup")
