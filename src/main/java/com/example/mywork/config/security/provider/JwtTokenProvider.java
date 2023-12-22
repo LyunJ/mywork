@@ -4,6 +4,7 @@ import com.example.mywork.config.security.custom.CustomUserDetailService;
 import com.example.mywork.config.security.custom.CustomUserDetails;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,6 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request){
         return Arrays.stream(request.getCookies()).filter(cookie ->
             cookie.getName().equals("jwt")
-        ).findFirst().get().getValue();
+        ).findFirst().map(Cookie::getValue).orElseGet(() -> null);
     }
 }

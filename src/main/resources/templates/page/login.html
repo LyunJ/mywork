@@ -6,7 +6,7 @@
 </head>
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
     <main class="form-signin w-100 m-auto">
-        <form th:action="@{/api/authenticate}" th:object="${loginDTO}" method="get">
+        <form th:action="@{/api/login}" th:object="${loginDTO}" method="get">
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
             <div class="form-floating">
                 <input type="text" class="form-control" id="floatingInput" placeholder="username" th:field="*{username}">

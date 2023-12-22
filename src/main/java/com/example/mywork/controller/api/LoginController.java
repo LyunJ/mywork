@@ -20,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -46,19 +48,24 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String login(HttpServletResponse response, @ModelAttribute("loginDTO") LoginDTO loginDTO){
+    public ResponseEntity login(HttpServletResponse response, @ModelAttribute("loginDTO") LoginDTO loginDTO){
         Authentication authentication = loginService.getAuthentication(loginDTO);
         if (authentication == null){
-            return "redirect:/page/login";
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(URI.create("/page/login"));
+
+            return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
         }
 
         String jwt = jwtTokenProvider.createToken(authentication.getName());
 
+        cookieService.setCookie(response,"jwt",jwt);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Authorization","Bearer " + jwt);
+        httpHeaders.setLocation(URI.create("/page/home"));
 
-        cookieService.setCookie(response,"jwt",jwt);
-        return "redirect:/page/home";
+
+        return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/signup")

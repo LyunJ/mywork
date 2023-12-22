@@ -18,12 +18,12 @@ public class LoginService {
     public Authentication getAuthentication(LoginDTO loginDTO){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),loginDTO.getPassword());
 
-        if(!authenticationToken.isAuthenticated()){
-            return null;
-        }
-
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        if(!authentication.isAuthenticated()){
+            return null;
+        }
 
         return authentication;
     }
